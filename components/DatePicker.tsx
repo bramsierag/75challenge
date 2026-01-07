@@ -89,28 +89,28 @@ export default function DatePicker({ value, onChange, onClose }: DatePickerProps
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 space-y-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-stone-800 rounded-lg shadow-lg max-w-sm w-full p-6 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
           <button
             onClick={goToPreviousMonth}
-            className="p-2 hover:bg-stone-100 rounded transition-colors"
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded transition-colors"
           >
-            <svg className="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-stone-600 dark:text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           
-          <h3 className="text-lg font-medium text-stone-800">
+          <h3 className="text-lg font-medium text-stone-800 dark:text-stone-200">
             {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
           </h3>
           
           <button
             onClick={goToNextMonth}
-            className="p-2 hover:bg-stone-100 rounded transition-colors"
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded transition-colors"
           >
-            <svg className="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-stone-600 dark:text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -119,7 +119,7 @@ export default function DatePicker({ value, onChange, onClose }: DatePickerProps
         {/* Weekdagen */}
         <div className="grid grid-cols-7 gap-1">
           {["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"].map((day) => (
-            <div key={day} className="text-center text-xs font-medium text-stone-500 py-2">
+            <div key={day} className="text-center text-xs font-medium text-stone-500 dark:text-stone-400 py-2">
               {day}
             </div>
           ))}
@@ -133,9 +133,9 @@ export default function DatePicker({ value, onChange, onClose }: DatePickerProps
               onClick={() => selectDate(day.date)}
               className={`
                 aspect-square flex items-center justify-center rounded text-sm transition-colors
-                ${!day.isCurrentMonth ? "text-stone-300" : "text-stone-700"}
-                ${isSelected(day.date) ? "bg-stone-800 text-white font-medium" : "hover:bg-stone-100"}
-                ${isToday(day.date) && !isSelected(day.date) ? "border border-stone-400" : ""}
+                ${!day.isCurrentMonth ? "text-stone-300 dark:text-stone-600" : "text-stone-700 dark:text-stone-300"}
+                ${isSelected(day.date) ? "bg-stone-800 dark:bg-stone-600 text-white font-medium" : "hover:bg-stone-100 dark:hover:bg-stone-700"}
+                ${isToday(day.date) && !isSelected(day.date) ? "border border-stone-400 dark:border-stone-500" : ""}
               `}
             >
               {day.day}
@@ -147,7 +147,7 @@ export default function DatePicker({ value, onChange, onClose }: DatePickerProps
         <div className="flex gap-2 pt-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2 px-4 bg-stone-200 text-stone-800 rounded hover:bg-stone-300 transition-colors"
+            className="flex-1 py-2 px-4 bg-stone-200 dark:bg-stone-700 text-stone-800 dark:text-stone-200 rounded hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
           >
             Annuleren
           </button>

@@ -1,5 +1,6 @@
 export interface MuscleGroup {
   musslegroup: string;
+  icon?: string;
 }
 
 export interface DaySchedule {
@@ -31,12 +32,12 @@ export function setStartDate(date: Date): void {
 
 export function getDaySchedule(date: Date = new Date()): DaySchedule {
   const muscleGroups: MuscleGroup[] = [
-    { musslegroup: "Chest" },
-    { musslegroup: "Triceps" },
-    { musslegroup: "Shoulders" },
-    { musslegroup: "Biceps" },
-    { musslegroup: "Back" },
-    { musslegroup: "Legs" }
+    { musslegroup: "Chest", icon: "chest" },
+    { musslegroup: "Triceps", icon: "triceps" },
+    { musslegroup: "Shoulders", icon: "shoulders" },
+    { musslegroup: "Biceps", icon: "biceps" },
+    { musslegroup: "Back", icon: "back" },
+    { musslegroup: "Legs", icon: "legs" }
   ];
 
   // Bereken dag nummer sinds start van de challenge

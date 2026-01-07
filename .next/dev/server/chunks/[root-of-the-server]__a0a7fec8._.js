@@ -67,22 +67,28 @@ function setStartDate(date) {
 function getDaySchedule(date = new Date()) {
     const muscleGroups = [
         {
-            musslegroup: "Chest"
+            musslegroup: "Chest",
+            icon: "chest"
         },
         {
-            musslegroup: "Triceps"
+            musslegroup: "Triceps",
+            icon: "triceps"
         },
         {
-            musslegroup: "Shoulders"
+            musslegroup: "Shoulders",
+            icon: "shoulders"
         },
         {
-            musslegroup: "Biceps"
+            musslegroup: "Biceps",
+            icon: "biceps"
         },
         {
-            musslegroup: "Back"
+            musslegroup: "Back",
+            icon: "back"
         },
         {
-            musslegroup: "Legs"
+            musslegroup: "Legs",
+            icon: "legs"
         }
     ];
     // Bereken dag nummer sinds start van de challenge
