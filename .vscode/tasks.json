@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Next.js Development Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Prisma Studio",
+      "type": "shell",
+      "command": "npm run prisma:studio",
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}
