@@ -6,7 +6,7 @@ FROM base AS deps
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Builder stage
 FROM base AS builder
@@ -15,11 +15,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY . .
+# Copy prisma schema first
 COPY prisma ./prisma/
 
 # Generate Prisma Client
 RUN npx prisma generate
+
+# Copy rest of the application
+COPY . .
 
 # Build Next.js
 RUN npm run build
@@ -38,7 +41,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=deps /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 USER nextjs
 
