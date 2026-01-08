@@ -1,0 +1,20 @@
+# CODEOWNERS for 75 Challenge
+# This file defines who is responsible for code review and approval
+
+# Default owner for everything in the repo
+* @bramsierag
+
+# Specific ownership rules (optional)
+/prisma/ @bramsierag
+/app/ @bramsierag
+/components/ @bramsierag
+
+# Docker and deployment
+Dockerfile* @bramsierag
+docker-compose.yml @bramsierag
+docker-entrypoint.sh @bramsierag
+
+# Configuration files
+*.config.js @bramsierag
+*.config.ts @bramsierag
+.github/ @bramsierag
