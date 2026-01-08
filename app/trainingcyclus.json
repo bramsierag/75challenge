@@ -1,11 +1,26 @@
 [
     {
         "musslegroup": "Chest",
-        "icon": "chest"
+        "icon": "chest",
+        "workout": [
+            "Bench Press",
+            "Incline Dumbbell Press",
+            "Chest Flyes",
+            "Push-Ups",
+            "Cable Crossovers"
+        ]
     },
     {
         "musslegroup": "Triceps",
-        "icon": "triceps"
+        "icon": "triceps",
+        "workout": [
+            "Tricep Dips",
+            "Tricep Pushdowns",
+            "Overhead Tricep Extension",
+            "Close-Grip Bench Press",
+            "Skull Crushers"
+        ]
+
     },
     {
         "musslegroup": "Shoulders",
@@ -13,14 +28,35 @@
     },
     {
         "musslegroup": "Biceps",
-        "icon": "biceps"
+        "icon": "biceps",
+        "workout": [
+            "Barbell Curls",
+            "Hammer Curls",
+            "Concentration Curls",
+            "Preacher Curls",
+            "Cable Curls"
+        ]
     },
     {
         "musslegroup": "Back",
-        "icon": "back"
+        "icon": "back",
+        "workout": [
+            "Pull-Ups",
+            "Deadlifts",
+            "Bent Over Rows",
+            "Lat Pulldowns",
+            "Seated Cable Rows"
+        ]
     },
     {
         "musslegroup": "Legs",
-        "icon": "legs"
+        "icon": "legs",
+        "workout": [
+            "Squats",
+            "Lunges",
+            "Leg Press",
+            "Leg Curls",
+            "Calf Raises"
+        ]
     }
 ]

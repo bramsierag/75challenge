@@ -1,5 +1,47 @@
+# Dependencies
 node_modules
-# Keep environment variables out of version control
-.env
+.pnp
+.pnp.js
 
-/app/generated/prisma
+# Testing
+coverage
+
+# Next.js
+.next/
+out/
+build
+dist
+
+# Production
+.vercel
+.netlify
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env*.local
+.env.production
+
+# Prisma
+# Note: migrations/ should be committed to track schema changes
+# The generated client is in node_modules/.prisma (already ignored above)
+
+# OS
+.DS_Store
+*.pem
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# PWA
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map

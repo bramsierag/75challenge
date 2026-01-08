@@ -37,6 +37,7 @@ export default function Home() {
   const [schedule, setSchedule] = useState<DaySchedule | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [showSidebar, setShowSidebar] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [startDate, setStartDateState] = useState<string>("");
@@ -155,35 +156,28 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-stone-50 dark:bg-stone-900 py-8 px-4 transition-colors">
-      <div className="max-w-md mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-1">
-          <div className="flex items-center justify-center gap-2">
-            <h1 className="text-3xl font-light text-stone-800 dark:text-stone-100">
-              75 Challenge
-            </h1>
+      {showSettings ? (
+        /* Settings Page */
+        <div className="max-w-md mx-auto space-y-6">
+          {/* Settings Header */}
+          <div className="flex items-center justify-between">
             <button
-              onClick={() => setShowSettings(!showSettings)}
-              className="p-1 rounded hover:bg-white dark:hover:bg-stone-800 transition-colors"
-              aria-label="Instellingen"
+              onClick={() => setShowSettings(false)}
+              className="p-2 rounded hover:bg-white dark:hover:bg-stone-800 transition-colors"
+              aria-label="Terug"
             >
-              <svg className="w-5 h-5 text-stone-500 dark:text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <svg className="w-6 h-6 text-stone-600 dark:text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-          </div>
-          <p className="text-sm text-stone-500 dark:text-stone-400">
-            Dag {schedule?.day || 1}
-          </p>
-        </div>
-
-        {/* Settings Modal */}
-        {showSettings && (
-          <div className="bg-white dark:bg-stone-800 rounded-lg p-6 shadow-lg border border-stone-200 dark:border-stone-700 space-y-4">
-            <h2 className="text-sm uppercase tracking-wider text-stone-500 dark:text-stone-400 font-medium">
+            <h1 className="text-2xl font-light text-stone-800 dark:text-stone-100">
               Instellingen
-            </h2>
+            </h1>
+            <div className="w-10"></div>
+          </div>
+
+          {/* Settings Content */}
+          <div className="bg-white dark:bg-stone-800 rounded-lg p-6 shadow-sm space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <label className="text-sm text-stone-700 dark:text-stone-300">
@@ -204,38 +198,110 @@ export default function Home() {
                 <label className="block text-sm text-stone-700 dark:text-stone-300">
                   Startdatum Challenge
                 </label>
-              <button
-                onClick={() => setShowDatePicker(true)}
-                className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded text-left hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-stone-800 dark:text-stone-200"
-                suppressHydrationWarning
-              >
-                {startDate ? new Date(startDate).toLocaleDateString('nl-NL', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                }) : 'Selecteer datum'}
-              </button>
-            </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowSettings(false)}
-                className="flex-1 bg-stone-200 dark:bg-stone-700 text-stone-800 dark:text-stone-200 py-2 px-4 rounded hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
-              >
-                Sluiten
-              </button>
+                <button
+                  onClick={() => setShowDatePicker(true)}
+                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded text-left hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-stone-800 dark:text-stone-200"
+                  suppressHydrationWarning
+                >
+                  {startDate ? new Date(startDate).toLocaleDateString('nl-NL', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  }) : 'Selecteer datum'}
+                </button>
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Date Picker */}
-        {showDatePicker && (
-          <DatePicker
-            value={startDate}
-            onChange={handleDatePickerChange}
-            onClose={() => setShowDatePicker(false)}
-          />
+          {/* Date Picker */}
+          {showDatePicker && (
+            <DatePicker
+              value={startDate}
+              onChange={handleDatePickerChange}
+              onClose={() => setShowDatePicker(false)}
+            />
+          )}
+        </div>
+      ) : (
+        /* Main Content */
+        <div className="max-w-md mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex-1"></div>
+          <div className="text-center flex-1">
+            <h1 className="text-3xl font-light text-stone-800 dark:text-stone-100">
+              75 Challenge
+            </h1>
+            <p className="text-sm text-stone-500 dark:text-stone-400">
+              Dag {schedule?.day || 1}
+            </p>
+          </div>
+          <div className="flex-1 flex justify-end">
+            <button
+              onClick={() => setShowSidebar(true)}
+              className="p-2 rounded hover:bg-white dark:hover:bg-stone-800 transition-colors"
+              aria-label="Menu"
+            >
+              <svg className="w-6 h-6 text-stone-600 dark:text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Sidebar Overlay */}
+        {showSidebar && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 z-50 transition-opacity"
+            onClick={() => setShowSidebar(false)}
+          >
+            {/* Sidebar */}
+            <div
+              className="fixed right-0 top-0 h-full w-80 bg-white dark:bg-stone-800 shadow-2xl transform transition-transform duration-300 ease-in-out"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Sidebar Header */}
+              <div className="flex items-center justify-between p-6 border-b border-stone-200 dark:border-stone-700">
+                <h2 className="text-xl font-medium text-stone-800 dark:text-stone-200">Menu</h2>
+                <button
+                  onClick={() => setShowSidebar(false)}
+                  className="p-2 rounded hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                  aria-label="Sluit menu"
+                >
+                  <svg className="w-6 h-6 text-stone-600 dark:text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Sidebar Content */}
+              <div className="p-4 space-y-2">
+                <button
+                  onClick={() => {
+                    setShowSidebar(false);
+                    setShowSettings(true);
+                  }}
+                  className="w-full text-left px-4 py-3 rounded hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors text-stone-700 dark:text-stone-300 flex items-center gap-3"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Instellingen
+                </button>
+                <button
+                  onClick={() => {
+                    setShowSidebar(false);
+                    // Voeg hier actie toe
+                  }}
+                  className="w-full text-left px-4 py-3 rounded hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors text-stone-700 dark:text-stone-300"
+                >
+                  Test
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Datum navigatie */}
@@ -331,7 +397,8 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </div>
+        </div>
+      )}
     </main>
   );
 }

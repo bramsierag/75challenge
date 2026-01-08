@@ -36,6 +36,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Install su-exec for privilege dropping
+RUN apk add --no-cache su-exec
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -46,12 +49,20 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY docker-entrypoint.sh ./
 
-USER nextjs
+# Make entrypoint executable and set ownership
+RUN chmod +x docker-entrypoint.sh && \
+    chown -R nextjs:nodejs /app
+
+# Don't switch to nextjs user yet - entrypoint will handle it
+# USER nextjs
 
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+# Run migrations and start server
+CMD ["./docker-entrypoint.sh"]

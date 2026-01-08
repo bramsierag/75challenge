@@ -1,5 +1,0 @@
-[00:00:02.420] Server  LOG     ✓ Ready in 1987ms
-[00:00:03.035] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
-[00:00:03.600] Server  WARN    ⚠ Unsupported metadata themeColor is configured in metadata export in /_not-found. Please move it to viewport export instead.
-Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
