@@ -4,6 +4,7 @@
 # Default owner for everything in the repo
 * @bramsierag
 
+
 # Specific ownership rules (optional)
 /prisma/ @bramsierag
 /app/ @bramsierag
