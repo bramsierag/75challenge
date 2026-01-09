@@ -2,6 +2,7 @@
 
 Dit project is een Next.js Progressive Web App met Postgres database integratie.
 
+
 ## Stack
 - Next.js 15+ (App Router)
 - TypeScript
