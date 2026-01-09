@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>75 Challenge Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .icon-preview {
+            display: flex;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .icon-item {
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        button {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .instructions {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 75 Challenge Icon Generator</h1>
+        <p>Klik op de knoppen om de icons te downloaden als PNG bestanden.</p>
+        
+        <div class="icon-preview">
+            <div class="icon-item">
+                <canvas id="canvas72" width="72" height="72"></canvas>
+                <p>72x72 (Android)</p>
+                <button onclick="downloadIcon(72)">Download 72x72</button>
+            </div>
+            <div class="icon-item">
+                <canvas id="canvas96" width="96" height="96"></canvas>
+                <p>96x96 (Android)</p>
+                <button onclick="downloadIcon(96)">Download 96x96</button>
+            </div>
+            <div class="icon-item">
+                <canvas id="canvas128" width="128" height="128"></canvas>
+                <p>128x128 (Android)</p>
+                <button onclick="downloadIcon(128)">Download 128x128</button>
+            </div>
+            <div class="icon-item">
+                <canvas id="canvas144" width="144" height="144"></canvas>
+                <p>144x144 (Android)</p>
+                <button onclick="downloadIcon(144)">Download 144x144</button>
+            </div>
+            <div class="icon-item">
+                <canvas id="canvas192" width="192" height="192"></canvas>
+                <p>192x192 (PWA)</p>
+                <button onclick="downloadIcon(192)">Download 192x192</button>
+            </div>
+            <div class="icon-item">
+                <canvas id="canvas512" width="512" height="512"></canvas>
+                <p>512x512 (PWA)</p>
+                <button onclick="downloadIcon(512)">Download 512x512</button>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Instructies:</h3>
+            <h4>✅ Verplicht voor PWA:</h4>
+            <ul>
+                <li><strong>icon-192x192.png</strong> - Minimaal vereist voor PWA</li>
+                <li><strong>icon-512x512.png</strong> - Aanbevolen voor PWA</li>
+            </ul>
+            <h4>🤖 Extra voor Android:</h4>
+            <ul>
+                <li><strong>72x72</strong> - ldpi (low density)</li>
+                <li><strong>96x96</strong> - mdpi (medium density)</li>
+                <li><strong>128x128</strong> - hdpi (high density)</li>
+                <li><strong>144x144</strong> - xhdpi (extra high density)</li>
+            </ul>
+            <p><em>💡 Tip: De 192x192 en 512x512 icons zijn al "maskable" geconfigureerd voor Android adaptive icons!</em></p>
+        </div>
+    </div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, size * 0.15625);
+            ctx.fill();
+            
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#3b82f6');
+            gradient.addColorStop(0.5, '#8b5cf6');
+            gradient.addColorStop(1, '#ec4899');
+            
+            // Text settings
+            const fontSize = size * 0.546875; // 280/512 for 512px
+            ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Shadow
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillText('75', size / 2, (size / 2) + (size * 0.01));
+            
+            // Main text with gradient
+            ctx.fillStyle = gradient;
+            ctx.fillText('75', size / 2, size / 2);
+            
+            // Accent line
+            const lineY = size * 0.7421875; // 380/512 for 512px
+            const lineHeight = size * 0.015625; // 8/512 for 512px
+            const lineWidth = size * 0.609375; // 312/512 for 512px
+            const lineX = (size - lineWidth) / 2;
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(lineX, lineY, lineWidth, lineHeight, lineHeight / 2);
+            ctx.fill();
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const link = document.createElement('a');
+            link.download = `icon-${size}x${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Draw icons on page load
+        window.onload = () => {
+            drawIcon(document.getElementById('canvas72'), 72);
+            drawIcon(document.getElementById('canvas96'), 96);
+            drawIcon(document.getElementById('canvas128'), 128);
+            drawIcon(document.getElementById('canvas144'), 144);
+            drawIcon(document.getElementById('canvas192'), 192);
+            drawIcon(document.getElementById('canvas512'), 512);
+        };
+    </script>
+</body>
+</html>

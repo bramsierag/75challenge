@@ -6,6 +6,7 @@ export async function GET(request: Request) {
   const type = searchParams.get('type');
   const dateParam = searchParams.get('date');
   const startDateParam = searchParams.get('startDate');
+  const cardioScheduleParam = searchParams.get('cardioSchedule');
   
   if (type === 'week') {
     const schedule = getWeekSchedule();
@@ -15,13 +16,14 @@ export async function GET(request: Request) {
   // Parse datums
   const date = dateParam ? new Date(dateParam) : new Date();
   const startDate = startDateParam ? new Date(startDateParam) : new Date();
+  const cardioSchedule = cardioScheduleParam ? JSON.parse(cardioScheduleParam) : null;
   
   // Bereken schedule met de gegeven startdatum
-  const schedule = getDayScheduleWithStart(date, startDate);
+  const schedule = getDayScheduleWithStart(date, startDate, cardioSchedule);
   return NextResponse.json(schedule);
 }
 
-function getDayScheduleWithStart(date: Date, startDate: Date) {
+function getDayScheduleWithStart(date: Date, startDate: Date, cardioSchedule: any) {
   const muscleGroups = [
     { musslegroup: "Chest" },
     { musslegroup: "Triceps" },
@@ -42,17 +44,36 @@ function getDayScheduleWithStart(date: Date, startDate: Date) {
     dayOfChallenge = 1;
   }
 
+  // Check if this day has cardio
+  const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const dayOfWeek = dayNames[targetDate.getDay()];
+  const cardioType = cardioSchedule?.[dayOfWeek];
+  const hasCardio = cardioType && cardioType !== 'none';
+
   const cycleDay = ((dayOfChallenge - 1) % 3 + 3) % 3;
   const startIndex = cycleDay * 2;
   
-  const todaysMuscleGroups = [
-    muscleGroups[startIndex].musslegroup,
-    muscleGroups[startIndex + 1].musslegroup
-  ];
+  let todaysMuscleGroups: string[];
+  
+  if (hasCardio) {
+    // Als er cardio is, toon 1 musclegroup + cardio type
+    todaysMuscleGroups = [
+      muscleGroups[startIndex].musslegroup,
+      cardioType === 'bike' ? 'Cardio: Fietsen' : 'Cardio: Hardlopen'
+    ];
+  } else {
+    // Normale dag met 2 musclegroups
+    todaysMuscleGroups = [
+      muscleGroups[startIndex].musslegroup,
+      muscleGroups[startIndex + 1].musslegroup
+    ];
+  }
 
   return {
     day: dayOfChallenge,
     date: date.toISOString().split('T')[0],
-    muscleGroups: todaysMuscleGroups
+    muscleGroups: todaysMuscleGroups,
+    hasCardio,
+    cardioType: hasCardio ? cardioType : undefined
   };
 }

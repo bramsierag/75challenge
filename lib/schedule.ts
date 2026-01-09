@@ -13,11 +13,16 @@ export function getStartDate(): Date {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('challengeStartDate');
     if (stored) {
-      return new Date(stored);
+      // Parse als lokale datum, niet als UTC
+      const [year, month, day] = stored.split('T')[0].split('-').map(Number);
+      return new Date(year, month - 1, day);
     }
     // Als er geen startdatum is, stel vandaag in als startdatum
     const today = new Date();
-    localStorage.setItem('challengeStartDate', today.toISOString());
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    localStorage.setItem('challengeStartDate', `${year}-${month}-${day}`);
     return today;
   }
   // Server-side fallback
@@ -26,7 +31,10 @@ export function getStartDate(): Date {
 
 export function setStartDate(date: Date): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('challengeStartDate', date.toISOString());
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    localStorage.setItem('challengeStartDate', `${year}-${month}-${day}`);
   }
 }
 

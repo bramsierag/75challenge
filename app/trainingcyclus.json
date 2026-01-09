@@ -24,7 +24,14 @@
     },
     {
         "musslegroup": "Shoulders",
-        "icon": "shoulders"
+        "icon": "shoulders",
+        "workout": [
+            "Overhead Press",
+            "Lateral Raises",
+            "Front Raises",
+            "Reverse Flyes",
+            "Arnold Press"
+        ]
     },
     {
         "musslegroup": "Biceps",
