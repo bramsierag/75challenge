@@ -43,8 +43,16 @@ export default function ProgressPhoto({ date, onClose, onSave, existingPhoto, lo
   };
 
   const handleSave = async () => {
-    if (!photo || !selectedFile) {
-      console.log('No photo or file selected');
+    if (!photo) {
+      console.log('No photo selected');
+      return;
+    }
+
+    // Als er geen nieuw bestand geselecteerd is, maar wel een bestaande foto, 
+    // dan hoeven we niks te doen
+    if (!selectedFile) {
+      console.log('No new file to upload, using existing photo');
+      onClose();
       return;
     }
 
@@ -53,6 +61,7 @@ export default function ProgressPhoto({ date, onClose, onSave, existingPhoto, lo
     formData.append('date', date);
 
     try {
+      setLoading(true);
       const response = await fetch('/api/photos', {
         method: 'POST',
         body: formData,
@@ -63,17 +72,25 @@ export default function ProgressPhoto({ date, onClose, onSave, existingPhoto, lo
         onSave(data.path);
         onClose();
       } else {
-        console.error('Failed to upload photo');
-        alert('Kon foto niet uploaden');
+        const errorData = await response.json();
+        console.error('Failed to upload photo:', errorData);
+        alert(`Kon foto niet uploaden: ${errorData.error || 'Onbekende fout'}`);
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
       alert('Fout bij uploaden foto');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async () => {
+    if (!confirm('Weet je zeker dat je deze foto wilt verwijderen?')) {
+      return;
+    }
+
     try {
+      setLoading(true);
       const response = await fetch(`/api/photos?date=${date}`, {
         method: 'DELETE',
       });
@@ -82,13 +99,17 @@ export default function ProgressPhoto({ date, onClose, onSave, existingPhoto, lo
         setPhoto(null);
         setSelectedFile(null);
         onSave('');
+        onClose();
       } else {
-        console.error('Failed to delete photo');
-        alert('Kon foto niet verwijderen');
+        const errorData = await response.json();
+        console.error('Failed to delete photo:', errorData);
+        alert(`Kon foto niet verwijderen: ${errorData.error || 'Onbekende fout'}`);
       }
     } catch (error) {
       console.error('Error deleting photo:', error);
       alert('Fout bij verwijderen foto');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,17 +186,21 @@ export default function ProgressPhoto({ date, onClose, onSave, existingPhoto, lo
         <div className="space-y-2">
           {photo ? (
             <>
-              <button
-                onClick={handleSave}
-                className="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors font-medium"
-              >
-                Opslaan
-              </button>
+              {selectedFile && (
+                <button
+                  onClick={handleSave}
+                  disabled={loading}
+                  className="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
+                >
+                  {loading ? 'Bezig met uploaden...' : 'Opslaan'}
+                </button>
+              )}
               <button
                 onClick={handleDelete}
-                className="w-full px-4 py-3 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg transition-colors"
+                disabled={loading}
+                className="w-full px-4 py-3 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 disabled:bg-red-50/50 disabled:cursor-not-allowed text-red-600 dark:text-red-400 rounded-lg transition-colors"
               >
-                Foto verwijderen
+                {loading ? 'Bezig...' : 'Foto verwijderen'}
               </button>
             </>
           ) : (

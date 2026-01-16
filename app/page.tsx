@@ -23,22 +23,75 @@ interface MuscleGroupData {
 }
 
 const TASK_NAMES = [
-  '2× 45 minuten training',
   'Dieet volgen',
   '3.8 liter water',
   '10 paginas lezen'
 ];
 
-function getMuscleIcon(muscleName: string): string {
-  const icons: { [key: string]: string } = {
-    'Chest': '💪',
-    'Triceps': '💪',
-    'Shoulders': '🏋️',
-    'Biceps': '💪',
-    'Back': '🏋️',
-    'Legs': '🦵'
+function getMuscleIcon(muscleName: string, isComplete: boolean = false) {
+  const colorClass = isComplete ? 'text-emerald-600 dark:text-emerald-400' : 'text-stone-500 dark:text-stone-400';
+  
+  const icons: { [key: string]: JSX.Element } = {
+    'Chest': (
+      // Bench Press - Barbell liggende positie
+      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="4" y="11" width="16" height="2" rx="1" strokeWidth="1.5"/>
+        <circle cx="6" cy="12" r="2" strokeWidth="1.5"/>
+        <circle cx="18" cy="12" r="2" strokeWidth="1.5"/>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 16v-8m-2 1l2-2 2 2"/>
+      </svg>
+    ),
+    'Triceps': (
+      // Tricep extension - arm gestrekt naar beneden
+      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4v12m0 0l-3-3m3 3l3-3"/>
+        <circle cx="9" cy="18" r="2" strokeWidth="1.5"/>
+        <circle cx="15" cy="18" r="2" strokeWidth="1.5"/>
+      </svg>
+    ),
+    'Shoulders': (
+      // Overhead Press - gewicht boven hoofd
+      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="7" y="3" width="10" height="2" rx="1" strokeWidth="1.5"/>
+        <circle cx="9" cy="4" r="1.5" strokeWidth="1.5"/>
+        <circle cx="15" cy="4" r="1.5" strokeWidth="1.5"/>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5v10"/>
+        <circle cx="12" cy="17" r="2" fill="currentColor"/>
+      </svg>
+    ),
+    'Biceps': (
+      // Bicep curl - gebogen arm met dumbbell
+      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 14c0-3 2-5 4-5s4 2 4 5"/>
+        <circle cx="8" cy="14" r="2" strokeWidth="1.5"/>
+        <circle cx="16" cy="14" r="2" strokeWidth="1.5"/>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9V4"/>
+      </svg>
+    ),
+    'Back': (
+      // Pull-up / rowing - horizontale pull beweging
+      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="18" height="2" rx="1" strokeWidth="1.5"/>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v8m-3-5l3-3 3 3"/>
+        <circle cx="12" cy="18" r="2" fill="currentColor"/>
+      </svg>
+    ),
+    'Legs': (
+      // Squat - barbell op schouders met squat beweging
+      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="6" y="4" width="12" height="2" rx="1" strokeWidth="1.5"/>
+        <circle cx="7.5" cy="5" r="1.5" strokeWidth="1.5"/>
+        <circle cx="16.5" cy="5" r="1.5" strokeWidth="1.5"/>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 6v5l3 5m0-10v5l-3 5"/>
+      </svg>
+    )
   };
-  return icons[muscleName] || '🏋️';
+  
+  return icons[muscleName] || (
+    <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+    </svg>
+  );
 }
 
 export default function Home() {
@@ -65,24 +118,56 @@ export default function Home() {
     saturday: 'none',
     sunday: 'none'
   });
+  const [absSchedule, setAbsSchedule] = useState<{ [key: string]: boolean }>({
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+    sunday: false
+  });
   const [showProgressPhoto, setShowProgressPhoto] = useState(false);
   const [progressPhotos, setProgressPhotos] = useState<{ [key: string]: string }>({});
   const [language, setLanguage] = useState<'nl' | 'en'>('nl');
   
   const { isOnline, saveTask, loadTasks, getPendingTasks } = useTaskSync();
 
+  // Hydration-safe initialization
   useEffect(() => {
     setMounted(true);
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-    setDarkMode(savedDarkMode);
-    if (savedDarkMode) {
-      document.documentElement.classList.add('dark');
-    }
     
-    // Laad cardio schema
-    const savedCardio = localStorage.getItem('cardioSchedule');
-    if (savedCardio) {
-      setCardioSchedule(JSON.parse(savedCardio));
+    // Alleen client-side localStorage toegang
+    if (typeof window !== 'undefined') {
+      const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+      if (savedDarkMode !== darkMode) {
+        setDarkMode(savedDarkMode);
+        if (savedDarkMode) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+      
+      // Laad cardio schema
+      const savedCardio = localStorage.getItem('cardioSchedule');
+      if (savedCardio) {
+        try {
+          setCardioSchedule(JSON.parse(savedCardio));
+        } catch (e) {
+          console.error('Failed to parse cardio schedule', e);
+        }
+      }
+      
+      // Laad buikspieren schema
+      const savedAbs = localStorage.getItem('absSchedule');
+      if (savedAbs) {
+        try {
+          setAbsSchedule(JSON.parse(savedAbs));
+        } catch (e) {
+          console.error('Failed to parse abs schedule', e);
+        }
+      }
     }
   }, []);
 
@@ -163,6 +248,22 @@ export default function Home() {
       const next: 'bike' | 'run' | 'none' = current === 'none' ? 'bike' : current === 'bike' ? 'run' : 'none';
       const updated = { ...prev, [day]: next };
       localStorage.setItem('cardioSchedule', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleAbsToggle = (day: string) => {
+    setAbsSchedule(prev => {
+      const currentCount = Object.values(prev).filter(Boolean).length;
+      const isCurrentlySelected = prev[day];
+      
+      // Als we proberen een 4e dag toe te voegen, doe dan niks
+      if (!isCurrentlySelected && currentCount >= 3) {
+        return prev;
+      }
+      
+      const updated = { ...prev, [day]: !isCurrentlySelected };
+      localStorage.setItem('absSchedule', JSON.stringify(updated));
       return updated;
     });
   };
@@ -255,7 +356,9 @@ export default function Home() {
 
   const handleDatePickerChange = (date: string) => {
     setStartDateState(date);
-    const newStartDate = new Date(date);
+    // Parse datum als lokale datum om timezone problemen te voorkomen
+    const [year, month, day] = date.split('-').map(Number);
+    const newStartDate = new Date(year, month - 1, day);
     setStartDate(newStartDate);
     setShowDatePicker(false);
     setShowSettings(false);
@@ -422,7 +525,69 @@ export default function Home() {
               })}
             </div>
           </div>
-
+          {/* Buikspieren Weekoverzicht */}
+          <div className="bg-white dark:bg-stone-800 rounded-lg p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm uppercase tracking-wider text-stone-500 dark:text-stone-400 font-medium">
+                Buikspieren Planning
+              </h2>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-stone-600 dark:text-stone-400">
+                  {Object.values(absSchedule).filter(Boolean).length} / 3
+                </span>
+                {Object.values(absSchedule).filter(Boolean).length === 3 && (
+                  <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </div>
+            </div>
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              Kies 3 dagen per week voor buikspieroefeningen
+            </p>
+            <div className="space-y-2">
+              {[
+                { key: 'monday', label: 'Maandag' },
+                { key: 'tuesday', label: 'Dinsdag' },
+                { key: 'wednesday', label: 'Woensdag' },
+                { key: 'thursday', label: 'Donderdag' },
+                { key: 'friday', label: 'Vrijdag' },
+                { key: 'saturday', label: 'Zaterdag' },
+                { key: 'sunday', label: 'Zondag' }
+              ].map(({ key, label }) => {
+                const isSelected = absSchedule[key];
+                return (
+                  <button
+                    key={key}
+                    onClick={() => handleAbsToggle(key)}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded transition-colors ${
+                      isSelected 
+                        ? 'bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/40' 
+                        : 'bg-stone-50 dark:bg-stone-700 hover:bg-stone-100 dark:hover:bg-stone-600'
+                    }`}
+                  >
+                    <span className={`${
+                      isSelected 
+                        ? 'text-purple-700 dark:text-purple-300 font-medium' 
+                        : 'text-stone-700 dark:text-stone-300'
+                    }`}>{label}</span>
+                    <div className="flex items-center gap-2">
+                      {isSelected ? (
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">💪 Buikspieren</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-stone-400 dark:text-stone-500">-</span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           {/* Date Picker */}
           {showDatePicker && (
             <DatePicker
@@ -645,9 +810,7 @@ export default function Home() {
                         </svg>
                       )
                     ) : (
-                      <span className={isComplete ? 'text-emerald-600 dark:text-emerald-400' : 'text-stone-500 dark:text-stone-400'}>
-                        {getMuscleIcon(group)}
-                      </span>
+                      getMuscleIcon(group, isComplete)
                     )}
                     <span className="flex-1 text-left">{group}</span>
                     <div className="flex items-center gap-2">
@@ -700,6 +863,41 @@ export default function Home() {
                 </div>
               );
             })}
+            
+            {/* Buikspieren (als geselecteerd voor deze dag) */}
+            {(() => {
+              const date = new Date(schedule?.date || currentDate);
+              const dayIndex = date.getDay(); // 0 = zondag, 1 = maandag, etc.
+              const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+              const dayName = dayNames[dayIndex];
+              const hasAbs = absSchedule[dayName];
+              
+              if (!hasAbs) return null;
+              
+              const absKey = `workout:abs:${schedule?.date || ''}`;
+              const isComplete = workoutTasks[absKey] || false;
+              
+              return (
+                <button
+                  onClick={() => handleWorkoutToggle('abs', schedule?.date || '')}
+                  className={`w-full py-3 px-4 rounded flex items-center gap-3 transition-colors ${
+                    isComplete 
+                      ? 'bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300'
+                      : 'bg-stone-50 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-600'
+                  } cursor-pointer`}
+                >
+                  <svg className={`w-5 h-5 ${isComplete ? 'text-emerald-600 dark:text-emerald-400' : 'text-stone-500 dark:text-stone-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                  </svg>
+                  <span className="flex-1 text-left">Buikspieren</span>
+                  {isComplete && (
+                    <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </button>
+              );
+            })()}
           </div>
         </div>
 

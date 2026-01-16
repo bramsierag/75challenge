@@ -98,23 +98,40 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE: Verwijder foto voor een specifieke datum
+// DELETE: Verwijder een foto
 export async function DELETE(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const date = searchParams.get('date');
 
   if (!date) {
-    return NextResponse.json({ error: 'Date parameter is required' }, { status: 400 });
+    return NextResponse.json({ error: 'Date is required' }, { status: 400 });
   }
 
   try {
+    // Haal foto op uit database
+    const photo = await prisma.progressPhoto.findUnique({
+      where: { date }
+    });
+
+    if (!photo) {
+      return NextResponse.json({ error: 'Photo not found' }, { status: 404 });
+    }
+
+    // Verwijder bestand
+    const { unlink } = await import('fs/promises');
+    const filepath = join(process.cwd(), 'uploads', 'progress-photos', photo.filename);
+    
+    try {
+      await unlink(filepath);
+    } catch (err) {
+      console.error('Error deleting file:', err);
+      // Continue anyway - database deletion is more important
+    }
+
     // Verwijder uit database
     await prisma.progressPhoto.delete({
       where: { date }
     });
-
-    // Note: Je zou hier ook het fysieke bestand kunnen verwijderen met fs.unlink
-    // maar voor veiligheid laten we bestanden staan
 
     return NextResponse.json({ success: true });
   } catch (error) {
