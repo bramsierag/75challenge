@@ -31,7 +31,7 @@ const TASK_NAMES = [
 function getMuscleIcon(muscleName: string, isComplete: boolean = false) {
   const colorClass = isComplete ? 'text-emerald-600 dark:text-emerald-400' : 'text-stone-500 dark:text-stone-400';
   
-  const icons: { [key: string]: JSX.Element } = {
+  const icons: { [key: string]: React.JSX.Element } = {
     'Chest': (
       // Bench Press - Barbell liggende positie
       <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">

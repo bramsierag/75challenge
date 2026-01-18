@@ -1,0 +1,24 @@
+⚠ Invalid next.config.js options detected: 
+⚠     Unrecognized key(s) in object: 'api'
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+▲ Next.js 16.1.1 (Turbopack)
+- Environments: .env
+- Experiments (use with caution):
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 7.9s
+  Running TypeScript ...
+Failed to compile.
+
+./app/page.tsx:34:33
+Type error: Cannot find namespace 'JSX'.
+
+[0m [90m 32 |[39m   [36mconst[39m colorClass [33m=[39m isComplete [33m?[39m [32m'text-emerald-600 dark:text-emerald-400'[39m [33m:[39m [32m'text-stone-500 dark:text-stone-400'[39m[33m;[39m
+ [90m 33 |[39m   
+[31m[1m>[22m[39m[90m 34 |[39m   [36mconst[39m icons[33m:[39m { [key[33m:[39m string][33m:[39m [33mJSX[39m[33m.[39m[33mElement[39m } [33m=[39m {
+ [90m    |[39m                                 [31m[1m^[22m[39m
+ [90m 35 |[39m     [32m'Chest'[39m[33m:[39m (
+ [90m 36 |[39m       [90m// Bench Press - Barbell liggende positie[39m
+ [90m 37 |[39m       [33m<[39m[33msvg[39m className[33m=[39m{[32m`w-5 h-5 ${colorClass}`[39m} fill[33m=[39m[32m"none"[39m stroke[33m=[39m[32m"currentColor"[39m viewBox[33m=[39m[32m"0 0 24 24"[39m[33m>[39m[0m
+Next.js build worker exited with code: 1 and signal: null
